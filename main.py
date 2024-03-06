@@ -22,7 +22,6 @@ initial_message = """ You are a master coder, engineer, and start-up advisor hel
 
 def main():
     # Accept user input
-    st.write(st.session_state.chat_history)
     if prompt := st.chat_input("Hey friend, let's start writing!"):
         logging.info(f"Received user input: {prompt}")
         # Add user message to chat history
