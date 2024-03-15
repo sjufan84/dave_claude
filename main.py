@@ -20,8 +20,8 @@ default_initial_message = """ You are a master coder, engineer, and start-up adv
 # Initialize session state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-if "initial_prompt" not in st.session_state:
-    st.session_state.initial_prompt = default_initial_message
+if "initial_message" not in st.session_state:
+    st.session_state.initial_message = default_initial_message
 if "is_logged_in" not in st.session_state:
     st.session_state.is_logged_in = False
 
@@ -41,6 +41,7 @@ def password_check():
         st.error("The password you entered is incorrect")
 
 def main():
+    st.write(st.session_state.chat_history)
     # Accept user input
     initial_prompt = st.sidebar.text_area(
         "Input an initial prompt for Claude to guide the conversation",
@@ -49,8 +50,18 @@ def main():
     )
     change_message_button = st.sidebar.button("Change initial message")
     if change_message_button:
-        st.session_state.initial_prompt = get_initial_message(initial_prompt)
+        st.session_state.initial_message = get_initial_message(initial_prompt)
         st.sucess(f"Initial message updated to {initial_prompt}")
+
+    # Display chat messages from history on app rerun
+    for message in st.session_state.chat_history:
+        logging.debug(f"Displaying message: {message}")
+        if message["role"] == "assistant":
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+        elif message["role"] == "user":
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
 
     if prompt := st.chat_input("Hey friend, how can I help you today?"):
         logging.info(f"Received user input: {prompt}")
@@ -75,12 +86,15 @@ def main():
                         message_placeholder.markdown(full_response + "▌")
 
             # Start the streaming conversation
+            # Filter the chat history to be the last 8 messages
+            # as long as the first message has role user
+
             with client.messages.stream(
                 messages=st.session_state.chat_history,
                 model="claude-3-opus-20240229",
                 event_handler=StreamHandler,
                 system = st.session_state.initial_message,
-                max_tokens=1250
+                max_tokens=4000
             ) as stream:
                 logger.info(f"Current initial message: {st.session_state.initial_message}")
                 final_message = stream.get_final_message()
