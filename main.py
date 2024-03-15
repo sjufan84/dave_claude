@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-client = Anthropic(api_key=os.getenv("ANTHROPIC_KEY"))
+client = Anthropic(api_key=st.secrets["my_secrets"]["ANTHROPIC_KEY"])
 
 default_initial_message = """ You are a master coder, engineer, and start-up advisor helping the user to debug
     their code and offer encouraging and valuable advice on how to improve their code
@@ -32,7 +32,7 @@ def get_initial_message(initial_prompt: str) -> str:
 
 def password_check():
     password = st.text_input("Enter your password", type="password")
-    correct_password = os.getenv("CURRENT_PASSWORD")
+    correct_password = st.secrets["my_secrets"]["CURRENT_PASSWORD"]
     if password == correct_password:
         st.session_state.is_logged_in = True
         st.success("You are now logged in")
@@ -42,7 +42,7 @@ def password_check():
 
 def main():
     # Accept user input
-    if len(st.session_state.chat_history) == 0:
+    if st.session_state.chat_history == []:
         st.markdown("""**:rainbow[@Erik and Babette]** -- Let me introduce you to Claude.\
         He is the latest\
         and greatest of the LLMs, beating GPT-4 on several benchmarks.\

@@ -1,5 +1,5 @@
 """ Utility functions for extracting text from images and text files. """
-from typing import List
+'''from typing import List
 import logging
 from io import BytesIO
 from fastapi import UploadFile
@@ -64,4 +64,4 @@ async def extract_image_text(files: List[bytes]) -> str:
             total_response_text += response_text
     except Exception as e:
         logger.error(f"Error extracting text from image file: {e}")
-    return response_text
+    return response_text'''
