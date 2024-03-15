@@ -41,8 +41,23 @@ def password_check():
         st.error("The password you entered is incorrect")
 
 def main():
-    st.write(st.session_state.chat_history)
     # Accept user input
+    if len(st.session_state.chat_history) == 0:
+        st.markdown("""**:rainbow[@Erik and Babette]** -- Let me introduce you to Claude.\
+        He is the latest\
+        and greatest of the LLMs, beating GPT-4 on several benchmarks.\
+        He has a context window of 200,000 tokens,\
+        or about 350 pages of text with virtually perfect recall.\
+        So basically that means you could ask questions about\
+        an entire (relatively long) book and he would be able to answer them.\
+        Feel free to play around with this.\n\nYou will notice on the sidebar where
+        there is a text area to enter an initial prompt.\
+        This allows you to set up Claude to take on a persona, etc.  Currently it defaults to\
+        helping me with coding, but feel free to play around with it\
+        to get different results.\n\nI am working\
+        on adding in file uploads and image chat, but for now you can\
+        go wild with pushing the limits of his knowledge.  Countdown\
+        is on to GPT-5...""")
     initial_prompt = st.sidebar.text_area(
         "Input an initial prompt for Claude to guide the conversation",
         placeholder=f"Current prompt: {default_initial_message}",
