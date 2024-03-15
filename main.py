@@ -109,7 +109,7 @@ def main():
                 model="claude-3-opus-20240229",
                 event_handler=StreamHandler,
                 system = st.session_state.initial_message,
-                max_tokens=4000
+                max_tokens=3500
             ) as stream:
                 logger.info(f"Current initial message: {st.session_state.initial_message}")
                 final_message = stream.get_final_message()
