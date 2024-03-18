@@ -22,8 +22,8 @@ default_initial_message = """ You are a helpful assistant helping the user answe
 # Initialize session state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-if "initial_message" not in st.session_state:
-    st.session_state.initial_message = "You are a helpful assistant helping\
+if "initial_prompt" not in st.session_state:
+    st.session_state.initial_prompt = "You are a helpful assistant helping\
     the user answer questions and analyze files."
 if "is_logged_in" not in st.session_state:
     st.session_state.is_logged_in = False
@@ -170,7 +170,6 @@ def main():
         st.sidebar.markdown(":red[You have already uploaded a file to the chat.\
             Please ask a question and then you will be able to upload more files.]")
     elif not st.session_state.filesUploaded:
-        st.sidebar.markdown(":blue[Upload files to chat with Claude about:]")
         uploaded_files = st.sidebar.file_uploader(
             "Upload files", type=["pdf", "docx", "txt"],
             label_visibility="collapsed"
@@ -198,20 +197,19 @@ def main():
             st.sidebar.write(file)
     st.sidebar.markdown("---")
 
-    adjust_initial_message_button = st.sidebar.button(
-        ":blue[Adjust initial message]", type="secondary", use_container_width=True
+    st.sidebar.markdown("Current Initial Message:")
+    new_message = st.sidebar.text_area(
+        "Enter a new initial message",
+        placeholder=f"{st.session_state.initial_prompt}",
+        height=100, label_visibility="collapsed"
     )
-    if adjust_initial_message_button:
-        new_message = st.sidebar.text_area(
-            "Enter a new initial message",
-            placeholder=f"Current message: {st.session_state.initial_message}",
-            type="secondary", use_container_width=True
-        )
-        submit_message_button = st.sidebar.button("Submit new message")
-        if submit_message_button:
-            st.session_state.initial_message = get_initial_message(new_message)
-            st.sidebar.success(f"Initial message updated to {new_message}")
-            st.rerun()
+    submit_message_button = st.sidebar.button(
+        ":blue[Submit new message]", type="secondary", use_container_width=True
+    )
+    if submit_message_button:
+        st.session_state.initial_prompt = new_message
+        st.sidebar.success(f"Initial message updated to {new_message}")
+        st.rerun()
     start_new_session_button = st.sidebar.button(
         ":red[Start a new session]", type="secondary", use_container_width=True
     )
@@ -260,7 +258,6 @@ def main():
             )
         else:
             st.session_state.chat_history.append({"role": "user", "content": prompt})
-            st.write(f"Chat history: {st.session_state.chat_history}")
 
         st.session_state.current_string = None
         st.session_state.currentFileType = None
@@ -287,7 +284,7 @@ def main():
                 messages=st.session_state.chat_history,
                 model="claude-3-opus-20240229",
                 event_handler=StreamHandler,
-                system = st.session_state.initial_message,
+                system = get_initial_message(st.session_state.initial_prompt),
                 max_tokens=3500
             ) as stream:
                 final_message = stream.get_final_message()
@@ -297,6 +294,7 @@ def main():
                 )
                 logging.debug(f"Chat history: {st.session_state.chat_history}")
 
+            st.rerun()
 if __name__ == "__main__":
     if st.session_state.is_logged_in:
         main()
