@@ -150,7 +150,7 @@ def file_upload_handler(uploaded_files):
         st.warning("Please upload a file")
 
 def main():
-    if st.session_state.isNewSession:
+    if len(st.session_state.chat_history) == 0:
         st.markdown("""Meet Claude, the cutting-edge Language Model (LLM)
         that surpasses GPT-4 in capability and knowledge. Engage in deep conversations
         on a wide range of topics, as Claude can track up to 350 pages of text.
@@ -240,6 +240,8 @@ def main():
                 st.markdown(message["content"])
 
     if prompt := st.chat_input("Hey friend, how can I help you today?"):
+        if st.session_state.isNewSession:
+            st.session_state.isNewSession = False
         logging.info(f"Received user input: {prompt}")
         # Add user message to chat history
         if st.session_state.filesUploaded and st.session_state.currentFileType != "text":
@@ -263,7 +265,7 @@ def main():
         st.session_state.current_string = None
         st.session_state.currentFileType = None
         st.session_state.filesUploaded = False
-        uploaded_files = None   
+        uploaded_files = None
 
         with st.chat_message("user"):
             st.markdown(prompt)
