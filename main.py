@@ -157,9 +157,12 @@ def main():
         A standout feature is the ability to upload documents (and soon images)
         for Claude to analyze, summarize, explain, or help you understand them better.
         You can upload one document at a time and ask questions before moving on to another.
-        Claude will remember all documents uploaded per session, so start a new session
+        Make sure to click 'Upload Files' after selecting a file to process it.\n\nClaude
+        will remember all documents uploaded per session, so start a new session
         for unrelated topics. With a memory capacity of over 300 pages,
-        feel free to explore the limits of Claude's abilities.\n\nOne other fun
+        feel free to explore the limits of Claude's abilities.  Keep in mind, however,
+        that the longer the documents / chat history get, the slower Claude will be, so if you are
+        done discussing a lengthier document, it may be best to start a new session.\n\nOne other fun
         thing to play around with is the 'Initial Message' feature.  This is what shapes
         how Claude responds to you.  So, for instance, you may want him to respond as if
         he was your advisor, a friend, a teacher, or even a character from a movie (pirates area always
