@@ -1,0 +1,79 @@
+I have an application that I want to deploy to Google Cloud. It is a fastapi backend that utilizes an inference model that I have trained in order to be able to clone my friends voice. It leverages pytorch and other libraries to facilitate this. In order to be able to call the api appropriately, I need to be able to have the user pass an audio file to the api and then process it on the backend, returning the new audio to the user. I am trying to build a Docker Image to deploy the app, but am not super familiar with that process. Can you walk me through what i need to do in order to deploy my app?
+
+Certainly! Here's a step-by-step guide to help you deploy your FastAPI backend application with a trained inference model to Google Cloud using Docker:
+
+Dockerfile Creation:
+
+Create a new file named Dockerfile in your project directory.
+
+Open the Dockerfile and add the following contents:
+
+FROM python:3.9
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+This Dockerfile sets up a Python environment, installs the dependencies from requirements.txt, copies your application code into the container, exposes port 8000, and starts the FastAPI server using Uvicorn.
+
+Requirements File:
+
+Create a file named requirements.txt in your project directory.
+Add the necessary dependencies for your FastAPI application, including FastAPI, Uvicorn, PyTorch, and any other libraries you're using.
+Build the Docker Image:
+
+Open a terminal and navigate to your project directory.
+
+Run the following command to build the Docker image:
+
+docker build -t your-image-name .
+
+Replace your-image-name with a desired name for your Docker image.
+
+Test the Docker Image Locally (Optional):
+
+To test your Docker image locally, run the following command:
+
+docker run -p 8000:8000 your-image-name
+
+This will start a container based on your Docker image and map port 8000 from the container to port 8000 on your local machine.
+
+Open a web browser and visit http://localhost:8000 to ensure your FastAPI application is running correctly.
+
+Push the Docker Image to Google Container Registry:
+
+Authenticate with Google Cloud SDK by running:
+
+gcloud auth configure-docker
+
+Tag your Docker image for pushing to Google Container Registry:
+
+docker tag your-image-name gcr.io/your-project-id/your-image-name
+
+Replace your-project-id with your Google Cloud project ID.
+
+Push the Docker image to Google Container Registry:
+
+docker push gcr.io/your-project-id/your-image-name
+
+Deploy to Google Cloud Run:
+
+Go to the Google Cloud Console and navigate to the Cloud Run section.
+Click on "Create Service" and select the pushed Docker image from the Container Registry.
+Configure the service settings, such as the service name, region, and authentication.
+Set the port to 8000 to match the port exposed in your Dockerfile.
+Click "Create" to deploy your FastAPI application to Google Cloud Run.
+Test the Deployed Application:
+
+Once the deployment is complete, Google Cloud Run will provide you with a URL for your deployed application.
+Use that URL to send requests to your FastAPI backend, including the audio file as per your API specifications.
+That's it! You have now deployed your FastAPI backend application with a trained inference model to Google Cloud using Docker. Remember to handle the audio file upload and processing correctly in your FastAPI application code.
+
+Let me know if you have any further questions!

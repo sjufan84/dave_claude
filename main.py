@@ -285,7 +285,7 @@ def main():
 
             with client.messages.stream(
                 messages=st.session_state.chat_history,
-                model="claude-3-opus-20240229",
+                model="claude-3-5-sonnet-20240620",
                 event_handler=StreamHandler,
                 system = get_initial_message(st.session_state.initial_prompt),
                 max_tokens=3500
